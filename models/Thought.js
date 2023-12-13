@@ -1,10 +1,10 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 const { DateTime } = require('luxon');
 
-const reactionSchema = new mongoose.Schema({
+const reactionSchema = new Schema({
   reactionId: {
     type: Schema.Types.ObjectId,
-    default: new Schema.Types.ObjectId(),
+    default: () => new mongoose.Types.ObjectId()
   },
   reactionBody: {
     type: String,
@@ -16,7 +16,7 @@ const reactionSchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
-    type: DateTime,
+    type: Date,
     default: DateTime.now(),
     get: function (value) {
       // ISO 8601 format (UTC)
@@ -35,7 +35,7 @@ const thoughtSchema = new Schema(
       maxLength: 280,
     },
     createdAt: {
-      type: DateTime,
+      type: Date,
       default: DateTime.now(),
       get: function (value) {
         // ISO 8601 format (UTC)
