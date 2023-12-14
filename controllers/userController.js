@@ -49,8 +49,14 @@ async function updateUser(req, res) {
         username: req.body.username,
         email: req.body.email
       },
-      { new: true }
+      {
+        new: true,
+        runValidators: true
+      }
     );
+    // .select('-__v')
+    // .populate('thoughts')
+    // .populate('friends');
 
     // console.log(user);
     res.json(user);
@@ -77,6 +83,11 @@ async function deleteUser(req, res) {
 
     await Thought.deleteMany({ _id: { $in: user.thoughts } });
     // need to remove this friend from other friends' lists
+    await User.updateMany(
+      { _id: { $in: user.friends } },
+      { $pull: { friends: user._id } },
+
+    )
     res.json({ message: 'User and associated thoughts deleted!' })
   } catch (err) {
     console.log(err);
@@ -86,7 +97,40 @@ async function deleteUser(req, res) {
 
 async function addFriend(req, res) {
   try {
+    const newFriend = await User.findOneAndUpdate(
+      { _id: req.params.friendId },
+      { $addToSet: { friends: user._id } },
+      {
+        new: true,
+        runValidators: true
+      }
+    )
+    // .select('-__v')
+    // .populate('thoughts')
+    // .populate('friends');
 
+    if (!newFriend) {
+      return res
+        .status(404)
+        .json({ message: 'Found no friend with that ID' });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: newFriend._id } },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: 'Found no user with that ID' });
+    }
+
+    res.json(user);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -95,7 +139,40 @@ async function addFriend(req, res) {
 
 async function removeFriend(req, res) {
   try {
+    const oldFriend = await User.findOneAndUpdate(
+      { _id: req.params.friendId },
+      { $pull: { friends: user._id } },
+      {
+        new: true,
+        runValidators: true
+      }
+    )
+      // .select('-__v')
+      // .populate('thoughts')
+      // .populate('friends');
 
+    if (!oldFriend) {
+      return res
+        .status(404)
+        .json({ message: 'Found no friend with that ID' });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: oldFriend._id } },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: 'Found no user with that ID' });
+    }
+
+    res.json(user);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);

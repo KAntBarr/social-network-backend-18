@@ -36,7 +36,10 @@ async function createThought(req, res) {
     const user = await User.findOneAndUpdate(
       { _id: req.body.userId },
       { $addToSet: { thoughts: thought._id } },
-      { new: true }
+      {
+        new: true,
+        runValidators: true
+      }
     );
 
     if (!user) {
@@ -61,7 +64,10 @@ async function updateThought(req, res) {
         thoughtText: req.body.thoughtText,
         username: req.body.username
       },
-      { new: true }
+      {
+        new: true,
+        runValidators: true
+      }
     );
 
     // console.log(thought);
@@ -95,7 +101,23 @@ async function deleteThought(req, res) {
 
 async function addReaction(req, res) {
   try {
+    const thought = await Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: {
+        reactionBody: req.body.reactionBody,
+        username: req.body.username,
+      } } },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
 
+    if (!thought) {
+      return res.status(404).json({ message: 'No thought with that ID' });
+    }
+
+    res.json(thought);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -104,7 +126,14 @@ async function addReaction(req, res) {
 
 async function removeReaction(req, res) {
   try {
-
+    const thought = await Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionId: req.params.reactionId } } },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
