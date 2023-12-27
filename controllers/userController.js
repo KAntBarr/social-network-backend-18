@@ -7,7 +7,7 @@ async function getUsers(req, res) {
     res.json(users);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -25,7 +25,7 @@ async function getUser(req, res) {
     res.json(user);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -36,7 +36,7 @@ async function createUser(req, res) {
     res.json(user);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -68,7 +68,7 @@ async function updateUser(req, res) {
 
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -91,7 +91,7 @@ async function deleteUser(req, res) {
     res.json({ message: 'User and associated thoughts deleted!' })
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -99,7 +99,7 @@ async function addFriend(req, res) {
   try {
     const newFriend = await User.findOneAndUpdate(
       { _id: req.params.friendId },
-      { $addToSet: { friends: user._id } },
+      { $addToSet: { friends: req.params.userId } },
       {
         new: true,
         runValidators: true
@@ -117,7 +117,7 @@ async function addFriend(req, res) {
 
     const user = await User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $addToSet: { friends: newFriend._id } },
+      { $addToSet: { friends: req.params.friendId } },
       {
         new: true,
         runValidators: true
@@ -133,7 +133,7 @@ async function addFriend(req, res) {
     res.json(user);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -141,7 +141,7 @@ async function removeFriend(req, res) {
   try {
     const oldFriend = await User.findOneAndUpdate(
       { _id: req.params.friendId },
-      { $pull: { friends: user._id } },
+      { $pull: { friends: req.params.userId } },
       {
         new: true,
         runValidators: true
@@ -159,7 +159,7 @@ async function removeFriend(req, res) {
 
     const user = await User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $pull: { friends: oldFriend._id } },
+      { $pull: { friends: req.params.friendId } },
       {
         new: true,
         runValidators: true
@@ -175,7 +175,7 @@ async function removeFriend(req, res) {
     res.json(user);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 

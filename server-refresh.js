@@ -1,9 +1,10 @@
 const db = require('./config/connection');
-const { User } = require('./models');
+const { User, Thought } = require('./models');
 
 db.once('open', async () => {
   try {
     await User.deleteMany({});
+    await Thought.deleteMany({});
     console.log('Database refreshed.');  
     db.close();
   } catch (error) {

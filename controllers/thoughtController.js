@@ -7,7 +7,7 @@ async function getThoughts(req, res) {
     res.json(thoughts);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -24,7 +24,7 @@ async function getThought(req, res) {
     res.json(thought);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -51,7 +51,7 @@ async function createThought(req, res) {
     res.json(thought);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -79,7 +79,7 @@ async function updateThought(req, res) {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -95,7 +95,7 @@ async function deleteThought(req, res) {
     res.json({ message: 'Thought was deleted!' })
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -120,7 +120,7 @@ async function addReaction(req, res) {
     res.json(thought);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
@@ -136,7 +136,7 @@ async function removeReaction(req, res) {
     );
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({ error: `${err}`});
   }
 }
 
