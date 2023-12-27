@@ -2,9 +2,9 @@ const { Schema, model, Types } = require('mongoose');
 const { DateTime } = require('luxon');
 
 const reactionSchema = new Schema({
-  reactionId: {
+  reactionId: { // im not sure why this needed when '_id' is still being generated
     type: Schema.Types.ObjectId,
-    default: () => new mongoose.Types.ObjectId()
+    default: () => new Types.ObjectId()
   },
   reactionBody: {
     type: String,

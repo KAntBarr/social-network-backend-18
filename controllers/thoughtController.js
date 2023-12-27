@@ -134,6 +134,12 @@ async function removeReaction(req, res) {
         runValidators: true
       }
     );
+
+    if (!thought) {
+      return res.status(404).json({ message: 'No thought with that ID' });
+    }
+
+    res.json(thought);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: `${err}`});
